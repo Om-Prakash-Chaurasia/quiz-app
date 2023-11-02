@@ -1,13 +1,13 @@
 const quizData = [
     {
-        question: 'What is the capital of France?',
-        options: ['Paris', 'London', 'Berlin', 'Madrid'],
-        answer: 'Paris',
+        question: 'Which is the capital of India?',
+        options: ['Paris', 'London', 'Delhi', 'Madrid'],
+        answer: 'Delhi',
     },
     {
-        question: 'What is the largest planet in our solar system?',
-        options: ['Mars', 'Saturn', 'Jupiter', 'Neptune'],
-        answer: 'Jupiter',
+        question: 'Which is the smallest planet in our solar system?',
+        options: ['Mars', 'Saturn', 'Pluto', 'Neptune'],
+        answer: 'Pluto',
     },
     {
         question: 'Which country won the FIFA World Cup in 2018?',
@@ -30,9 +30,9 @@ const quizData = [
         answer: 'Pacific Ocean',
     },
     {
-        question: 'What is the chemical symbol for gold?',
+        question: 'What is the chemical symbol for Iron?',
         options: ['Au', 'Ag', 'Cu', 'Fe'],
-        answer: 'Au',
+        answer: 'Fe',
     },
     {
         question: 'Who painted the Mona Lisa?',
@@ -50,7 +50,7 @@ const quizData = [
         answer: 'Mars',
     },
     {
-        question: 'What is the largest species of shark?',
+        question: 'Which is the largest species of shark?',
         options: [
             'Great White Shark',
             'Whale Shark',
@@ -66,127 +66,126 @@ const quizData = [
     },
 ];
 
-const quiz = document.getElementById('quiz');
-const result = document.getElementById('result');
-const submit = document.getElementById('submit');
-const retry = document.getElementById('retry');
-const showAnswer = document.getElementById('showAnswer');
+const quizContainer = document.getElementById('quiz');
+const resultContainer = document.getElementById('result');
+const submitButton = document.getElementById('submit');
+const retryButton = document.getElementById('retry');
+const showAnswerButton = document.getElementById('showAnswer');
 
-let currQuestion = 0;
+let currentQuestion = 0;
 let score = 0;
-let incorrAnswers = [];
+let incorrectAnswers = [];
 
-function ramdomEle(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        [array[i], array[j]] = [array[j], array[i]];
     }
 }
 
-function dispQuestion() {
-    const quesData = quizData[currQuestion];
+function displayQuestion() {
+    const questionData = quizData[currentQuestion];
 
-    const quesElement = document.createElement('div');
-    quesElement.className = 'question';
-    quesElement.innerHTML = quesData.question;
+    const questionElement = document.createElement('div');
+    questionElement.className = 'question';
+    questionElement.innerHTML = questionData.question;
 
-    const optElement = document.createElement('div');
-    optElement.className = 'options';
+    const optionsElement = document.createElement('div');
+    optionsElement.className = 'options';
 
-    const randomOpt = [...quesData.options];
-    randomArr(randomOpt);
+    const shuffledOptions = [...questionData.options];
+    shuffleArray(shuffledOptions);
 
-    for (let i = 0; i < randomOpt.length; i++) {
+    for (let i = 0; i < shuffledOptions.length; i++) {
         const option = document.createElement('label');
         option.className = 'option';
 
         const radio = document.createElement('input');
         radio.type = 'radio';
         radio.name = 'quiz';
-        radio.value = randomOpt[i];
+        radio.value = shuffledOptions[i];
 
-        const optText = document.createTextNode(randomOpt[i]);
+        const optionText = document.createTextNode(shuffledOptions[i]);
 
         option.appendChild(radio);
-        option.appendChild(optText);
-        optElement.appendChild(option);
+        option.appendChild(optionText);
+        optionsElement.appendChild(option);
     }
 
-    quizCont.innerHTML = '';
-    quizCont.appendChild(quesElement);
-    quizCont.appendChild(optElement);
+    quizContainer.innerHTML = '';
+    quizContainer.appendChild(questionElement);
+    quizContainer.appendChild(optionsElement);
 }
 
-function checkAns() {
-    const selectedOpt = document.querySelector('input[name="quiz"]:checked');
-    if (selectedOpt) {
-        const answer = selectedOpt.value;
-        if (answer === quizData[currQuestion].answer) {
+function checkAnswer() {
+    const selectedOption = document.querySelector('input[name="quiz"]:checked');
+    if (selectedOption) {
+        const answer = selectedOption.value;
+        if (answer === quizData[currentQuestion].answer) {
             score++;
         } else {
-            incorrAnswers.push({
-                question: quizData[currQuestion].question,
-                incorrAnswers: answer,
-                corrAnswer = quizData[currQuestion].answer,
+            incorrectAnswers.push({
+                question: quizData[currentQuestion].question,
+                incorrectAnswer: answer,
+                correctAnswer: quizData[currentQuestion].answer,
             });
         }
-        currQuestion++;
-        selectedOpt.checked = false;
-        if (currQuestion < quizData.length) {
-            dispQuestion();
+        currentQuestion++;
+        selectedOption.checked = false;
+        if (currentQuestion < quizData.length) {
+            displayQuestion();
         } else {
-            dispRes();
+            displayResult();
         }
     }
 }
 
-function dispRes() {
-    quizCont.style.display = 'none';
-    submit.style.display = 'none';
-    retry.style.display = 'inline-block';
-    showAnswer.style.display = 'inline-block';
-    result.innerHTML = `You scored ${score} out of ${quizData.length}!`;
+function displayResult() {
+    quizContainer.style.display = 'none';
+    submitButton.style.display = 'none';
+    retryButton.style.display = 'inline-block';
+    showAnswerButton.style.display = 'inline-block';
+    resultContainer.innerHTML = `You scored ${score} out of ${quizData.length}!`;
 }
 
 function retryQuiz() {
-    currQuestion = 0;
+    currentQuestion = 0;
     score = 0;
-    incorrAnswers = [];
-    quizCont.style.display = 'block';
-    submit.style.display = 'inline-block';
-    retry.style.display = 'none';
-    showAnswer.style.display = 'none';
-    result.innerHTML = '';
-    dispQuestion();
+    incorrectAnswers = [];
+    quizContainer.style.display = 'block';
+    submitButton.style.display = 'inline-block';
+    retryButton.style.display = 'none';
+    showAnswerButton.style.display = 'none';
+    resultContainer.innerHTML = '';
+    displayQuestion();
 }
 
 function showAnswer() {
-    quizCont.style.display = 'none';
-    submit.style.display = 'none';
-    retry.style.display = 'inline-block';
-    showAnswer.style.display = 'none';
+    quizContainer.style.display = 'none';
+    submitButton.style.display = 'none';
+    retryButton.style.display = 'inline-block';
+    showAnswerButton.style.display = 'none';
 
-    let incorrAnswersHtml = '';
-    for (let i = 0; i < incorrAnswers.length; i++) {
-        incorrAnswersHtml += `
+    let incorrectAnswersHtml = '';
+    for (let i = 0; i < incorrectAnswers.length; i++) {
+        incorrectAnswersHtml += `
         <p>
-        <strong>Question:</strong> ${incorrAnswers[i].question}
-        <br>
-        <strong>Your Answer:</strong> ${incorrAnswers[i].incorrAnswers}
-        <br>
-        <strong>Correct Answer:</strong> ${incorrAnswers[i].corrAnswer}
+          <strong>Question:</strong> ${incorrectAnswers[i].question}<br>
+          <strong>Your Answer:</strong> ${incorrectAnswers[i].incorrectAnswer}<br>
+          <strong>Correct Answer:</strong> ${incorrectAnswers[i].correctAnswer}
         </p>
-        `;
+      `;
     }
-    result.innerHTML = `
-    <p>You scored ${score} out of ${quizData.length}! </p>
-    <p>Incorrect Answers:</p>
-    ${incorrAnswersHtml}
+
+    resultContainer.innerHTML = `
+      <p>You scored ${score} out of ${quizData.length}!</p>
+      <p>Incorrect Answers:</p>
+      ${incorrectAnswersHtml}
     `;
 }
 
-submit.addEventListener('click', checkAns);
-retry.addEventListener('click', retryQuiz);
-showAnswer.addEventListener('click', showAnswer);
+submitButton.addEventListener('click', checkAnswer);
+retryButton.addEventListener('click', retryQuiz);
+showAnswerButton.addEventListener('click', showAnswer);
 
-dispQuestion();
+displayQuestion();

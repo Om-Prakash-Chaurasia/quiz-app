@@ -25,9 +25,13 @@ h1 {
     margin-bottom: 10px;
 }
 
-.options {
-    display: block;
+.option {
     margin-bottom: 20px;
+}
+
+.option {
+    display: block;
+    margin-bottom: 10px;
 }
 
 .button {
