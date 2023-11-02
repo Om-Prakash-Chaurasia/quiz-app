@@ -90,5 +90,103 @@ function dispQuestion() {
     quesElement.className = 'question';
     quesElement.innerHTML = quesData.question;
 
+    const optElement = document.createElement('div');
+    optElement.className = 'options';
 
+    const randomOpt = [...quesData.options];
+    randomArr(randomOpt);
+
+    for (let i = 0; i < randomOpt.length; i++) {
+        const option = document.createElement('label');
+        option.className = 'option';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'quiz';
+        radio.value = randomOpt[i];
+
+        const optText = document.createTextNode(randomOpt[i]);
+
+        option.appendChild(radio);
+        option.appendChild(optText);
+        optElement.appendChild(option);
+    }
+
+    quizCont.innerHTML = '';
+    quizCont.appendChild(quesElement);
+    quizCont.appendChild(optElement);
 }
+
+function checkAns() {
+    const selectedOpt = document.querySelector('input[name="quiz"]:checked');
+    if (selectedOpt) {
+        const answer = selectedOpt.value;
+        if (answer === quizData[currQuestion].answer) {
+            score++;
+        } else {
+            incorrAnswers.push({
+                question: quizData[currQuestion].question,
+                incorrAnswers: answer,
+                corrAnswer = quizData[currQuestion].answer,
+            });
+        }
+        currQuestion++;
+        selectedOpt.checked = false;
+        if (currQuestion < quizData.length) {
+            dispQuestion();
+        } else {
+            dispRes();
+        }
+    }
+}
+
+function dispRes() {
+    quizCont.style.display = 'none';
+    submit.style.display = 'none';
+    retry.style.display = 'inline-block';
+    showAnswer.style.display = 'inline-block';
+    result.innerHTML = `You scored ${score} out of ${quizData.length}!`;
+}
+
+function retryQuiz() {
+    currQuestion = 0;
+    score = 0;
+    incorrAnswers = [];
+    quizCont.style.display = 'block';
+    submit.style.display = 'inline-block';
+    retry.style.display = 'none';
+    showAnswer.style.display = 'none';
+    result.innerHTML = '';
+    dispQuestion();
+}
+
+function showAnswer() {
+    quizCont.style.display = 'none';
+    submit.style.display = 'none';
+    retry.style.display = 'inline-block';
+    showAnswer.style.display = 'none';
+
+    let incorrAnswersHtml = '';
+    for (let i = 0; i < incorrAnswers.length; i++) {
+        incorrAnswersHtml += `
+        <p>
+        <strong>Question:</strong> ${incorrAnswers[i].question}
+        <br>
+        <strong>Your Answer:</strong> ${incorrAnswers[i].incorrAnswers}
+        <br>
+        <strong>Correct Answer:</strong> ${incorrAnswers[i].corrAnswer}
+        </p>
+        `;
+    }
+    result.innerHTML = `
+    <p>You scored ${score} out of ${quizData.length}! </p>
+    <p>Incorrect Answers:</p>
+    ${incorrAnswersHtml}
+    `;
+}
+
+submit.addEventListener('click', checkAns);
+retry.addEventListener('click', retryQuiz);
+showAnswer.addEventListener('click', showAnswer);
+
+dispQuestion();
